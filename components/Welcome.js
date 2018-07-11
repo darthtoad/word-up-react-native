@@ -26,7 +26,7 @@ export default class Welcome extends React.Component {
                 <ScrollView>
                     <Text>Word Up</Text>
                     <TextInput
-                        placeholder="Type a word"
+                        placeholder="Type a word (case sensitive)"
                         onChangeText={(word) => this.setState({word})}/>
                     <TouchableOpacity onPress={this.checkDefinition}>
                         <Text>Submit</Text>

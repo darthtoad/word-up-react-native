@@ -7,6 +7,7 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.changeToDefiniton = this.changeToDefiniton.bind(this);
+    this.changeToWelcome = this.changeToWelcome.bind(this);
   }
 
   state = {
@@ -16,6 +17,10 @@ export default class App extends React.Component {
 
   changeToDefiniton() {
     this.setState({screen: "Definition"});
+  }
+
+  changeToWelcome() {
+    this.setState({screen: "Welcome"}); 
   }
   
   render() {
@@ -31,7 +36,9 @@ export default class App extends React.Component {
         }
         {
           this.state.screen === "Definition" &&
-            <Definition word={this.state.word}/>
+            <Definition
+              changeScreen={this.changeToWelcome}
+              word={this.state.word}/>
         }
       </View>
     );
