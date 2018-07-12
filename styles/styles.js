@@ -2,11 +2,11 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      backgroundColor: '#ff9900',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginTop: 10
+        flex: 1,
+        backgroundColor: '#ff9900',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 10
     },
     title: {
         textAlign: 'center',
@@ -33,5 +33,20 @@ export const styles = StyleSheet.create({
         width: 100,
         borderRadius: 8,
         backgroundColor: '#e9e9e9'
-      }
+      },
+    text: {
+        fontSize: 22,
+        fontFamily: 'markazi-text-regular',
+        marginLeft: 10
+    },
+    boldText: {
+        fontSize: 22,
+        fontFamily: 'markazi-text-bold',
+        marginLeft: 10
+    },
+    smallText: {
+        fontSize: 14,
+        fontFamily: 'markazi-text-regular',
+        marginLeft: 10
+    }
   });

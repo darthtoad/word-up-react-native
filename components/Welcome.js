@@ -18,6 +18,9 @@ export default class Welcome extends React.Component {
         await Font.loadAsync({
             'markazi-text-regular': require('./../assets/fonts/MarkaziText-Regular.ttf'),
             });
+            await Font.loadAsync({
+                'markazi-text-bold': require('./../assets/fonts/MarkaziText-Bold.ttf'),
+                });
         this.setState({fontLoaded: true});
     }
 
