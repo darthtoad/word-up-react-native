@@ -48,5 +48,19 @@ export const styles = StyleSheet.create({
         fontSize: 14,
         fontFamily: 'markazi-text-regular',
         marginLeft: 10
+    },
+    smallTextLink: {
+        fontSize: 14,
+        fontFamily: 'markazi-text-regular',
+        color: 'blue',
+        marginLeft: 5
+    },
+    contentBox: {
+        borderRadius: 8,
+        borderWidth: 1,
+        backgroundColor: '#e9e9e9',
+        marginVertical: 5,
+        marginRight: 5,
+        paddingBottom: 5
     }
   });

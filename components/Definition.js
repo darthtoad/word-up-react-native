@@ -5,30 +5,36 @@ import { styles } from './../styles/styles';
 
 export default class Definition extends React.Component {
     state = {
-        defObject: null
+        defObject: null,
+        word: this.props.word
     }
 
     async componentDidMount() {
         this.setState({defObject: await getDefinition(this.props.word)})
     }
 
+    getSynonym = async (synonym) => {
+        this.setState({word: synonym});
+        this.setState({defObject: await getDefinition(synonym)});
+    }
+
     render() {
         return (
             <View style={styles.container}>
                 <ScrollView>
-                    <Text style={styles.title}>{this.props.word}</Text> {this.state.defObject !== null && 
+                    <Text style={styles.title}>{this.state.word}</Text> {this.state.defObject !== null && 
                     this.state.defObject.results ?
-                    this.state.defObject.results.map(function(result, key) {
+                    this.state.defObject.results.map((result, key) => {
                         return (
-                            <View key={key} style={{marginVertical: 5}}>
+                            <View key={key} style={styles.contentBox}>
                                 <Text style={styles.boldText}>{result.partOfSpeech + ": "}</Text>
                                 <Text style={styles.text}>{result.definition}</Text>
                                 {result.synonyms &&
                                     <View style={{flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: 5}}>
                                         <Text style={styles.smallText}>Synonyms: </Text>
-                                        {result.synonyms.map(function(synonym, key) {
+                                        {result.synonyms.map((synonym, key) => {
                                             return (
-                                                <Text style={styles.smallText} key={key + "Syn"}>{synonym}{key < result.synonyms.length - 1 && " ,"}</Text>
+                                                <Text style={styles.smallTextLink} key={key + "Syn"} onPress={() => this.getSynonym(synonym)}>{synonym}{key < result.synonyms.length - 1 && <Text style={{color: 'black'}}>, </Text>}</Text>
                                             )
                                         })}
                                     </View>
