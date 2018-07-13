@@ -30,6 +30,9 @@ export default class Definition extends React.Component {
     }
 
     getNewImage = async() => {
+        this.setState({imageHeight: null});
+        this.setState({imageWidth: null});
+        this.setState({imageUrl: null});
         const imageObj = await getImages(this.state.word);
         this.setState({imageUrl: await imageObj.imageUrl});
         this.setState({imageHeight: await parseInt(imageObj.height)});
