@@ -10,9 +10,13 @@ export async function getImages(word) {
         const data = await jsonData.data;
         const random = Math.round(Math.random() * (data.length - 1));
         console.log(random);
-        const imageUrl = await data[random].images.fixed_width_small.url;
+        const imageUrl = await data[random].images.fixed_width.url;
+        const width = await data[random].images.fixed_width.width;
+        const height = await data[random].images.fixed_width.height;
+        const returnObject = await {imageUrl, width, height};
         console.log(await imageUrl);
-        return imageUrl;
+        console.log(await returnObject);
+        return returnObject;
     } catch (e) {
         console.log(e);
         return null;

@@ -8,18 +8,32 @@ export default class Definition extends React.Component {
     state = {
         defObject: null,
         word: this.props.word,
-        imageUrl: null
+        imageUrl: null,
+        imageHeight: null,
+        imageWidth: null
+    }
+
+    constructor(props) {
+        super(props);
+        this.getNewImage.bind(this);
     }
 
     async componentDidMount() {
-        this.setState({defObject: await getDefinition(this.props.word)})
-        this.setState({imageUrl: await getImages(this.state.word)});
+        this.setState({defObject: await getDefinition(this.props.word)});
+        this.getNewImage();
     }
 
     getSynonym = async (synonym) => {
         this.setState({word: synonym});
         this.setState({defObject: await getDefinition(synonym)});
-        this.setState({imageUrl: await getImages(this.state.word)})
+        this.getNewImage();
+    }
+
+    getNewImage = async() => {
+        const imageObj = await getImages(this.state.word);
+        this.setState({imageUrl: await imageObj.imageUrl});
+        this.setState({imageHeight: await parseInt(imageObj.height)});
+        this.setState({imageWidth: await parseInt(imageObj.width)});
     }
 
     render() {
@@ -27,7 +41,11 @@ export default class Definition extends React.Component {
             <View style={styles.container}>
                 <ScrollView>
                     <Text style={styles.title}>{this.state.word}</Text>
-                    {this.state.imageUrl !== null && <Image source={{uri: this.state.imageUrl}} style={{height: 100, width: 100, alignSelf: 'center'}}/>}
+                    {this.state.imageUrl !== null && this.state.imageHeight !== null && this.state.imageWidth !== null && 
+                        <TouchableOpacity onPress={this.getNewImage}>
+                            <Image source={{uri: this.state.imageUrl}} style={{height: this.state.imageHeight, width: this.state.imageWidth, alignSelf: 'center'}}/>
+                        </TouchableOpacity>
+                    }
                     {this.state.defObject !== null && 
                     this.state.defObject.results ?
                     this.state.defObject.results.map((result, key) => {
