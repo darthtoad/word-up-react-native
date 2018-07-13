@@ -1,7 +1,6 @@
 import { API_KEY } from './../Constants.js';
 
 export async function getDefinition(word) {
-    console.log("thing");
     const config = {
         method: 'GET',
         headers: {

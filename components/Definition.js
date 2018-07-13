@@ -1,28 +1,34 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import { Image, Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import { getDefinition } from './../services/WordService';
+import { getImages } from './../services/GiphyService';
 import { styles } from './../styles/styles';
 
 export default class Definition extends React.Component {
     state = {
         defObject: null,
-        word: this.props.word
+        word: this.props.word,
+        imageUrl: null
     }
 
     async componentDidMount() {
         this.setState({defObject: await getDefinition(this.props.word)})
+        this.setState({imageUrl: await getImages(this.state.word)});
     }
 
     getSynonym = async (synonym) => {
         this.setState({word: synonym});
         this.setState({defObject: await getDefinition(synonym)});
+        this.setState({imageUrl: await getImages(this.state.word)})
     }
 
     render() {
         return (
             <View style={styles.container}>
                 <ScrollView>
-                    <Text style={styles.title}>{this.state.word}</Text> {this.state.defObject !== null && 
+                    <Text style={styles.title}>{this.state.word}</Text>
+                    {this.state.imageUrl !== null && <Image source={{uri: this.state.imageUrl}} style={{height: 100, width: 100, alignSelf: 'center'}}/>}
+                    {this.state.defObject !== null && 
                     this.state.defObject.results ?
                     this.state.defObject.results.map((result, key) => {
                         return (
