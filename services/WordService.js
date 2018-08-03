@@ -1,11 +1,22 @@
-import { API_KEY } from './../Constants.js';
+let mashape;
+
+getMashapeKey = async () => {
+    try {
+        mashape = await fetch("https://word-up-node-backend-nzkyhnunql.now.sh/mashape");
+        mashape = await mashape.json();
+        console.log(await mashape);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
 export async function getDefinition(word) {
     try {
+        await getMashapeKey();
         const config = {
             method: 'GET',
             headers: {
-                "X-Mashape-Key": API_KEY,
+                "X-Mashape-Key": await mashape.mashapeKey,
                 "X-Mashape-Host": "wordsapiv1.p.mashape.com"        
             }
         }

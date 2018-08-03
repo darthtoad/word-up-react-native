@@ -3,19 +3,21 @@ import { Image, Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import { getDefinition } from './../services/WordService';
 import { getImages } from './../services/GiphyService';
 import { styles } from './../styles/styles';
+import firebase from 'firebase/app';
 
 export default class Definition extends React.Component {
     state = {
         defObject: null,
         word: this.props.word,
         imageUrl: null,
-        imageHeight: null,
-        imageWidth: null
+        imageHeight: 100,
+        imageWidth: 100
     }
 
     constructor(props) {
         super(props);
         this.getNewImage.bind(this);
+        this.saveWord.bind(this);
     }
 
     async componentDidMount() {
@@ -30,13 +32,24 @@ export default class Definition extends React.Component {
     }
 
     getNewImage = async() => {
-        this.setState({imageHeight: null});
-        this.setState({imageWidth: null});
         this.setState({imageUrl: null});
         const imageObj = await getImages(this.state.word);
-        this.setState({imageUrl: await imageObj.imageUrl});
-        this.setState({imageHeight: await parseInt(imageObj.height)});
-        this.setState({imageWidth: await parseInt(imageObj.width)});
+        if (imageObj !== null) {
+            this.setState({imageUrl: await imageObj.imageUrl});
+            this.setState({imageHeight: await parseInt(imageObj.height)});
+            this.setState({imageWidth: await parseInt(imageObj.width)});
+        }
+    }
+
+    saveWord = async() => {
+        console.log(this.state.word);
+        const fb = await firebase.app();
+        console.log(await fb);
+        console.log(await fb.auth());
+        const userId = await fb.auth().currentUser.uid;
+        await fb.database().ref("users/" + await userId).push({
+            word: this.state.word
+        })
     }
 
     render() {
@@ -44,10 +57,11 @@ export default class Definition extends React.Component {
             <View style={styles.container}>
                 <ScrollView>
                     <Text style={styles.title}>{this.state.word}</Text>
-                    {this.state.imageUrl !== null && this.state.imageHeight !== null && this.state.imageWidth !== null && 
+                    {this.state.imageUrl !== null && this.state.height !== null && this.state.width !== null ? 
                         <TouchableOpacity onPress={this.getNewImage}>
                             <Image source={{uri: this.state.imageUrl}} style={{height: this.state.imageHeight, width: this.state.imageWidth, alignSelf: 'center'}}/>
-                        </TouchableOpacity>
+                        </TouchableOpacity> :
+                        <Image source={{uri: "https://media.istockphoto.com/photos/abstract-black-background-studio-backdrop-well-use-as-background-picture-id480928276?k=6&m=480928276&s=612x612&w=0&h=xGmINQXoJjRYwAYtRjhyxiyfyiWUCcpnQFyFmUIcOos="}} style={{height: this.state.imageHeight, width: this.state.imageWidth, alignSelf: 'center'}} />
                     }
                     {this.state.defObject !== null && 
                     this.state.defObject.results ?
@@ -74,6 +88,9 @@ export default class Definition extends React.Component {
                             <Text>Loading...</Text>
                     }
                     <View style={{alignItems: 'center'}}>
+                        <TouchableOpacity style={styles.button} onPress={this.saveWord}>
+                            <Text>Save Word</Text>
+                        </TouchableOpacity>
                         <TouchableOpacity onPress={this.props.changeScreen} style={[styles.button, {alignItems: 'center', marginTop: 5}]}>
                             <Text>Go Back</Text>
                         </TouchableOpacity>

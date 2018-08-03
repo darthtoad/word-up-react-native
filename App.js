@@ -3,21 +3,42 @@ import { StyleSheet, Text, View } from 'react-native';
 import Welcome from './components/Welcome';
 import Definition from './components/Definition';
 import { styles } from './styles/styles.js';
+import Saved from './components/Saved';
+import LogIn from './components/LogIn';
+import SignUp from './components/SignUp';
+import * as firebase from 'firebase';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.changeToDefiniton = this.changeToDefiniton.bind(this);
     this.changeToWelcome = this.changeToWelcome.bind(this);
+    this.changeToSignUp = this.changeToSignUp.bind(this);
+    this.changeToLogIn = this.changeToLogIn.bind(this);
+    this.changeToSaved = this.changeToSaved.bind(this);
+    // this.getGiphyKey = this.getGiphyKey.bind(this);
+    // this.getMashapeKey = this.getMashapeKey.bind(this);
   }
 
   state = {
-    screen: "Welcome",
+    screen: "LogIn",
     word: ""
+  }
+
+  changeToSaved() {
+    this.setState({screen: "Saved"});
   }
 
   changeToDefiniton() {
     this.setState({screen: "Definition"});
+  }
+
+  changeToSignUp() {
+    this.setState({screen: "SignUp"});
+  }
+
+  changeToLogIn() {
+    this.setState({screen: "LogIn"});
   }
 
   changeToWelcome() {
@@ -27,11 +48,29 @@ export default class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        { this.state.screen === "LogIn" &&
+          <View>
+            <LogIn 
+              changeScreen={this.changeToWelcome}
+              signUp={this.changeToSignUp}
+            />
+          </View>
+        }
+        {
+          this.state.screen === "SignUp" &&
+          <View>
+            <SignUp
+              logIn={this.changeToLogIn}
+              changeScreen={this.changeToWelcome}
+              />
+          </View>
+        }
         { this.state.screen === "Welcome" &&
           <View>
             <Welcome
               changeScreen={this.changeToDefiniton}
               setWord={(word) => this.setState({word})}
+              changeScreenToSaved={this.changeToSaved}
               />
           </View>
         }
@@ -40,6 +79,13 @@ export default class App extends React.Component {
             <Definition
               changeScreen={this.changeToWelcome}
               word={this.state.word}/>
+        }
+        {
+          this.state.screen === "Saved" &&
+            <Saved
+              changeScreen={this.changeToDefiniton}
+              newWord={this.changeToWelcome}
+              setWord={(word) => this.setState({word})} />
         }
       </View>
     );

@@ -2,11 +2,11 @@ import React from 'react';
 import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import { styles } from './../styles/styles';
 import { Font } from 'expo';
+import * as firebase from 'firebase';
 
 export default class Welcome extends React.Component {
     state = {
-        word: "",
-        fontLoaded: false
+        word: ""
     }
 
     constructor(props) {
@@ -14,15 +14,22 @@ export default class Welcome extends React.Component {
         this.checkDefinition = this.checkDefinition.bind(this);
     }
 
-    async componentDidMount() {
-        await Font.loadAsync({
-            'markazi-text-regular': require('./../assets/fonts/MarkaziText-Regular.ttf'),
-            });
-            await Font.loadAsync({
-                'markazi-text-bold': require('./../assets/fonts/MarkaziText-Bold.ttf'),
-                });
-        this.setState({fontLoaded: true});
-    }
+    // async componentDidMount() {
+    //     try {
+    //         await this.props.getGiphyKey();
+    //         await this.props.getMashapeKey();
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+
+    //     await Font.loadAsync({
+    //         'markazi-text-regular': require('./../assets/fonts/MarkaziText-Regular.ttf'),
+    //         });
+    //         await Font.loadAsync({
+    //             'markazi-text-bold': require('./../assets/fonts/MarkaziText-Bold.ttf'),
+    //             });
+    //     this.setState({fontLoaded: true});
+    // }
 
     checkDefinition() {
         if (this.state.word !== "") {
@@ -36,21 +43,23 @@ export default class Welcome extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                {this.state.fontLoaded ? 
-                    <ScrollView>
-                        <Text style={styles.title}>Word Up</Text>}
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Type a word (case sensitive)"
-                            onChangeText={(word) => this.setState({word})}/>
-                        <TouchableOpacity
-                            style={styles.button}
-                            onPress={this.checkDefinition}>
-                            <Text>Submit</Text>
-                        </TouchableOpacity>
-                    </ScrollView> :
-                    <Text style={{marginTop: (window.height / 2) - 10}}>LOADING...</Text>
-                }
+                <ScrollView>
+                    <Text style={styles.title}>Word Up</Text>}
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Type a word (case sensitive)"
+                        onChangeText={(word) => this.setState({word})}/>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={this.checkDefinition}>
+                        <Text>Submit</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={this.props.changeScreenToSaved}>
+                        <Text>See Saved Words</Text>
+                    </TouchableOpacity>
+                </ScrollView>
             </View>
         )
     }
