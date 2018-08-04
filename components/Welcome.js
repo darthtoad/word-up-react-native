@@ -14,6 +14,10 @@ export default class Welcome extends React.Component {
         this.checkDefinition = this.checkDefinition.bind(this);
     }
 
+    async componentDidMount() {
+        await this.props.setList();
+    }
+
     // async componentDidMount() {
     //     try {
     //         await this.props.getGiphyKey();

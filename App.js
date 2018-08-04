@@ -16,13 +16,31 @@ export default class App extends React.Component {
     this.changeToSignUp = this.changeToSignUp.bind(this);
     this.changeToLogIn = this.changeToLogIn.bind(this);
     this.changeToSaved = this.changeToSaved.bind(this);
+    this.getArray = this.getArray.bind(this);
     // this.getGiphyKey = this.getGiphyKey.bind(this);
     // this.getMashapeKey = this.getMashapeKey.bind(this);
   }
 
+  getArray = async() => {
+    const fb = firebase.app();
+    const userId = fb.auth().currentUser.uid;
+    console.log("ID: " + userId);
+    const fbRef = fb.database().ref('users/' + userId);
+    await fbRef.on('value', (snapshot) => {
+        let newList = [];
+        console.log("Snapping");
+        snapshot.forEach((value) => {
+            newList.push(value.val().word);
+        })
+        console.log(newList);
+        this.setState({wordList: newList});
+    });
+  }
+
   state = {
     screen: "LogIn",
-    word: ""
+    word: "",
+    wordList: []
   }
 
   changeToSaved() {
@@ -69,6 +87,7 @@ export default class App extends React.Component {
           <View>
             <Welcome
               changeScreen={this.changeToDefiniton}
+              setList={this.getArray}
               setWord={(word) => this.setState({word})}
               changeScreenToSaved={this.changeToSaved}
               />
@@ -85,6 +104,7 @@ export default class App extends React.Component {
             <Saved
               changeScreen={this.changeToDefiniton}
               newWord={this.changeToWelcome}
+              wordList={this.state.wordList}
               setWord={(word) => this.setState({word})} />
         }
       </View>
