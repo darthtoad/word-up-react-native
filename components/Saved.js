@@ -15,43 +15,33 @@ export default class Saved extends React.Component {
         this.lookUp = this.lookUp.bind(this);
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        this.setState({wordList: await this.getArray()});
+    }
+
+    getArray = async() => {
         const fb = firebase.app();
         const userId = fb.auth().currentUser.uid;
         console.log("ID: " + userId);
         const fbRef = fb.database().ref('users/' + userId);
-        let newList = [];
-        fbRef.on('value', (snapshot) => {
+        await fbRef.on('value', (snapshot) => {
+            let newList = [];
             console.log("Snapping");
             snapshot.forEach((value) => {
-                newList.push(value.val());
+                newList.push(value.val().word);
             })
             console.log(newList);
+            return newList;
         });
-        this.setState({wordList: newList});
     }
 
-    delete() {
-        const fb = firebase.app();
-        const userId = fb.auth().currentUser.uid;
-        fb.database().ref('users/' + userId).once('value', function(snapshot) {
-            snapshot.forEach(value => {
-                if (value.val() === this.state.word) {
-                    snapshot.remove();
-                }
-            })
-        })
-    }
+    
 
-    lookUp() {
-        this.props.setWord(this.state.word);
-        this.props.changeScreen();
-    }
-
-    render() {
+    getList = () => {
+        console.log("getting list");
         return (
             <View>
-                {this.state.wordList.length > 0 ?
+                {this.state.wordList && this.state.wordList.length > 0 ?
                     <View>
                         <ScrollView>
                             <Text style={styles.title}>Saved Words</Text>
@@ -74,6 +64,55 @@ export default class Saved extends React.Component {
                         <Text style={styles.title}>You might not have any saved words</Text>
                     </View>
                 }
+            </View>
+        )
+    }
+
+    delete() {
+        const fb = firebase.app();
+        const userId = fb.auth().currentUser.uid;
+        fb.database().ref('users/' + userId).once('value', function(snapshot) {
+            snapshot.forEach(value => {
+                if (value.val() === this.state.word) {
+                    snapshot.remove();
+                }
+            })
+        })
+    }
+
+    lookUp() {
+        this.props.setWord(this.state.word);
+        this.props.changeScreen();
+    }
+
+    render() {
+        return (
+            <View>
+                <View>
+                {this.state.wordList && this.state.wordList.length > 0 ?
+                    <View>
+                        <ScrollView>
+                            <Text style={styles.title}>Saved Words</Text>
+                            <Text style={styles.boldText}>Click on Word for Options</Text>
+                            {this.state.wordList.map((word) => {
+                                <View>
+                                    <Text style={styles.text} onPress={this.setState({word})}>{word}</Text>
+                                    {
+                                        this.state.word === word &&
+                                        <View>
+                                            <TouchableOpacity onPress={this.lookUp} style={styles.button}>Look Up Word</TouchableOpacity>
+                                            <TouchableOpacity onPress={this.delete} style={styles.button}>Delete</TouchableOpacity>
+                                        </View>
+                                    }
+                                </View>
+                            })}
+                        </ScrollView>
+                    </View> :
+                    <View>
+                        <Text style={styles.title}>You might not have any saved words</Text>
+                    </View>
+                }
+                </View>
                 <View>
                     <TouchableOpacity style={styles.button} onPress={this.props.newWord}>
                         <Text>Look Up a New Word</Text>
